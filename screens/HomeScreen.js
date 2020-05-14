@@ -2,36 +2,76 @@ import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import firebase from './Firestore';
 
 import { MonoText } from '../components/StyledText';
+import { render } from 'react-dom';
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+class HomeScreen extends Component () {
+  constructor(props) {
+    super(props);
 
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
+    this.state = {
+      dataRef: firebase.firestore().collection('habits'),
+      habits: [],
+    };
+  }
 
-          <Text style={styles.getStartedText}>Open up the code for this screen if you dare muah ha ha:</Text>
+  getDb(db) {
+    db.get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        let habit = doc.data();
+        habit.key = doc.id;
 
-          <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
+        this.setState({
+          habits: this.state.habits.concat(habit),
+        });
+      });
+    });
+  }
+
+  componentDidMount() {
+    this.getDb(this.state.dataRef);
+  }
+  
+  render() {
+    const habits = this.state.habits.map((h, i) => (
+      <li key={i}>{h.name}</li>
+    ));
+
+    return (
+      <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+          <View>
+          {this.state.habits.length === 0 ? (
+            <p>loading...</p>
+          ) : (
+            <ul>{habits}</ul>
+          )}
           </View>
-
-          <Text style={styles.getStartedText}>
-            Change any of the text, save the file, and your app will automatically reload.
-          </Text>
-        </View>
-
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </View>
-  );
+          <View style={styles.getStartedContainer}>
+            <DevelopmentModeNotice />
+  
+            <Text style={styles.getStartedText}>Open up the code for this screen if you dare muah ha ha:</Text>
+  
+            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
+              <MonoText>screens/HomeScreen.js</MonoText>
+            </View>
+  
+            <Text style={styles.getStartedText}>
+              Change any of the text, save the file, and your app will automatically reload.
+            </Text>
+          </View>
+  
+          <View style={styles.helpContainer}>
+            <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
+              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 HomeScreen.navigationOptions = {
@@ -159,3 +199,5 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+
+export default HomeScreen;
