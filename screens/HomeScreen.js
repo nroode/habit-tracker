@@ -9,42 +9,35 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebase from '../config/firestore';
-import { MonoText } from '../components/StyledText';
+import TestComponent from '../components/TestComponent';
 
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
-    this.firestoreRef = firebase.firestore().collection('habits');
-
     this.state = {
-      habitsArr: [],
+      habits: [],
     };
+    console.log(`my state is: ${this.state.habits}`);
   }
 
-  getCollection = (querySnapshot) => {
-    const habitsArr = [];
-    querySnapshot.forEach((res) => {
-      const { name, id, description } = res.data();
-      habitsArr.push({
-        res,
-        name,
-        id,
-        description,
-      });
-    });
-    this.setState({
-      habitsArr,
-    });
-  };
-
   componentDidMount() {
-    firebase
-      .database()
-      .ref('habits')
-      .on('value', (snapshot) => {
-        const habitsArr = snapshot.val();
-        this.setState({ habitsArr });
+    const habitsRef = firebase.database().ref('habit');
+    console.log(`ref is ${habitsRef}`);
+    habitsRef.on('value', (snapshot) => {
+      let habits = snapshot.val();
+      let habitArr = [];
+
+      for (let habit in habits) {
+        habitArr.push({
+          id: habit,
+          name: habit.name,
+          description: habit.description,
+        });
+      }
+      this.setState({
+        habits: habitArr,
       });
+    });
   }
 
   render() {
@@ -62,9 +55,14 @@ class HomeScreen extends Component {
             Beard YOLO cardigan blog.
           </p>
           <h2>Render mock data here: </h2>
-          {this.state.habitsArr.map((habit, i) => {
-            return <ListItem key={i} title={habit} />;
+          {this.state.habits.map((habit) => {
+            return (
+              <div>
+                <p>{habit.name}</p>
+              </div>
+            );
           })}
+          <TestComponent></TestComponent>
         </View>
         <View style={styles.button}>
           <Button
