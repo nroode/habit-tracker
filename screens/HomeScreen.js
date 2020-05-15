@@ -1,202 +1,103 @@
 import * as WebBrowser from 'expo-web-browser';
-import * as React from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  TextInput,
+  View,
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import firebase from './Firestore';
-
+import firebase from '../config/firestore';
 import { MonoText } from '../components/StyledText';
-import { render } from 'react-dom';
 
-class HomeScreen extends Component () {
+class HomeScreen extends Component {
   constructor(props) {
     super(props);
+    this.firestoreRef = firebase.firestore().collection('habits');
 
     this.state = {
-      dataRef: firebase.firestore().collection('habits'),
-      habits: [],
+      habitsArr: [],
     };
   }
 
-  getDb(db) {
-    db.get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        let habit = doc.data();
-        habit.key = doc.id;
-
-        this.setState({
-          habits: this.state.habits.concat(habit),
-        });
+  getCollection = (querySnapshot) => {
+    const habitsArr = [];
+    querySnapshot.forEach((res) => {
+      const { name, id, description } = res.data();
+      habitsArr.push({
+        res,
+        name,
+        id,
+        description,
       });
     });
-  }
+    this.setState({
+      habitsArr,
+    });
+  };
 
   componentDidMount() {
-    this.getDb(this.state.dataRef);
+    firebase
+      .database()
+      .ref('habits')
+      .on('value', (snapshot) => {
+        const habitsArr = snapshot.val();
+        this.setState({ habitsArr });
+      });
   }
-  
+
   render() {
-    const habits = this.state.habits.map((h, i) => (
-      <li key={i}>{h.name}</li>
-    ));
-
     return (
-      <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View>
-          {this.state.habits.length === 0 ? (
-            <p>loading...</p>
-          ) : (
-            <ul>{habits}</ul>
-          )}
-          </View>
-          <View style={styles.getStartedContainer}>
-            <DevelopmentModeNotice />
-  
-            <Text style={styles.getStartedText}>Open up the code for this screen if you dare muah ha ha:</Text>
-  
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText>screens/HomeScreen.js</MonoText>
-            </View>
-  
-            <Text style={styles.getStartedText}>
-              Change any of the text, save the file, and your app will automatically reload.
-            </Text>
-          </View>
-  
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </View>
+      <ScrollView style={styles.container}>
+        <View>
+          <h1>Welcome to Habit Tracker!</h1>
+          <p>
+            Microdosing brooklyn lomo, drinking vinegar dreamcatcher slow-carb
+            helvetica. Chartreuse kickstarter vegan occupy jianbing bushwick
+            swag godard prism unicorn locavore shabby chic offal meditation.
+            Normcore four dollar toast occupy unicorn. Chillwave tattooed cliche
+            man braid trust fund narwhal ugh live-edge banjo. Knausgaard
+            drinking vinegar man braid tattooed everyday carry bicycle rights.
+            Beard YOLO cardigan blog.
+          </p>
+          <h2>Render mock data here: </h2>
+          {this.state.habitsArr.map((habit, i) => {
+            return <ListItem key={i} title={habit} />;
+          })}
+        </View>
+        <View style={styles.button}>
+          <Button
+            title="Continue"
+            onPress={() => this.storeUser()}
+            color="#19AC52"
+          />
+        </View>
+      </ScrollView>
     );
   }
-}
-
-HomeScreen.navigationOptions = {
-  header: null,
-};
-
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
-
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use useful development
-        tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
-
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/workflow/development-mode/');
-}
-
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change'
-  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    padding: 35,
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
+  inputGroup: {
+    flex: 1,
+    padding: 0,
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#cccccc',
   },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
+  preloader: {
     left: 0,
     right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
+    top: 0,
+    bottom: 0,
+    position: 'absolute',
     alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
+    justifyContent: 'center',
   },
 });
 
