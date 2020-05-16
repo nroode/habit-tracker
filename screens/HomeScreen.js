@@ -14,62 +14,16 @@ import TestComponent from '../components/TestComponent';
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      habits: [],
-    };
-    console.log(`my state is: ${this.state.habits}`);
-  }
-
-  componentDidMount() {
-    const habitsRef = firebase.database().ref('habit');
-    console.log(`ref is ${habitsRef}`);
-    habitsRef.on('value', (snapshot) => {
-      let habits = snapshot.val();
-      let habitArr = [];
-
-      for (let habit in habits) {
-        habitArr.push({
-          id: habit,
-          name: habit.name,
-          description: habit.description,
-        });
-      }
-      this.setState({
-        habits: habitArr,
-      });
-    });
   }
 
   render() {
     return (
       <ScrollView style={styles.container}>
         <View>
-          <h1>Welcome to Habit Tracker!</h1>
-          <p>
-            Microdosing brooklyn lomo, drinking vinegar dreamcatcher slow-carb
-            helvetica. Chartreuse kickstarter vegan occupy jianbing bushwick
-            swag godard prism unicorn locavore shabby chic offal meditation.
-            Normcore four dollar toast occupy unicorn. Chillwave tattooed cliche
-            man braid trust fund narwhal ugh live-edge banjo. Knausgaard
-            drinking vinegar man braid tattooed everyday carry bicycle rights.
-            Beard YOLO cardigan blog.
-          </p>
-          <h2>Render mock data here: </h2>
-          {this.state.habits.map((habit) => {
-            return (
-              <div>
-                <p>{habit.name}</p>
-              </div>
-            );
-          })}
           <TestComponent></TestComponent>
         </View>
         <View style={styles.button}>
-          <Button
-            title="Continue"
-            onPress={() => this.storeUser()}
-            color="#19AC52"
-          />
+          <Button title="Continue" color="#19AC52" />
         </View>
       </ScrollView>
     );
