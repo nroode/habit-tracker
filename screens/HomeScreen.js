@@ -14,12 +14,35 @@ import TestComponent from '../components/TestComponent';
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
+    this.getData = this.getData.bind(this);
+  }
+
+  getData() {
+    let firestore = firebase.firestore();
+    const docRef = firestore.collection('habits');
+
+    docRef
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, ' => ', doc.data());
+        });
+      })
+      .catch(function (error) {
+        console.log('Error getting documents: ', error);
+      });
+  }
+
+  componentDidMount() {
+    this.getData();
   }
 
   render() {
     return (
       <ScrollView style={styles.container}>
         <View>
+          {this.getData}
           <TestComponent></TestComponent>
         </View>
         <View style={styles.button}>
