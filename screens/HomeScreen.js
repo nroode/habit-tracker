@@ -5,33 +5,38 @@ import {
   Button,
   TouchableOpacity,
   TextInput,
+  Text,
   View,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebase from '../config/firestore';
-import TestComponent from '../components/TestComponent';
 
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.getData = this.getData.bind(this);
+
+    this.state = {
+      name: [],
+      description: '',
+      id: '',
+    };
   }
 
   getData() {
-    let firestore = firebase.firestore();
-    const docRef = firestore.collection('habits');
+    const db = firebase.firestore().collection('habits');
 
-    docRef
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, ' => ', doc.data());
-        });
-      })
-      .catch(function (error) {
-        console.log('Error getting documents: ', error);
+    db.get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        console.log(doc.id, data);
+        console.log('this type is ', typeof data);
+
+        this.setState((data) => ({
+          name: data.name.map((e) => e),
+        }));
       });
+    });
   }
 
   componentDidMount() {
@@ -42,8 +47,9 @@ class HomeScreen extends Component {
     return (
       <ScrollView style={styles.container}>
         <View>
-          {this.getData}
-          <TestComponent></TestComponent>
+          <Text>
+            <ul></ul>
+          </Text>
         </View>
         <View style={styles.button}>
           <Button title="Continue" color="#19AC52" />
