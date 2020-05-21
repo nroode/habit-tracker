@@ -10,13 +10,8 @@ import {
   Text,
   View,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import firebase from '../config/firestore';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './HomeScreen';
-
-const Stack = createStackNavigator();
+import SetDateComponent from '../components/SetDateComponent';
 
 class HabitDetail extends Component {
   constructor(props) {
@@ -28,25 +23,9 @@ class HabitDetail extends Component {
       <SafeAreaView>
         <View>
           <Text>
-            <h1>Drink Water</h1>
-            <h2>Select recurring days</h2>
-            <form method="get">
-              <input type="checkbox" value="Sunday" />
-              <label>Sun</label>
-              <input type="checkbox" value="Monday" />
-              <label>Mon</label>
-              <input type="checkbox" value="Tuesday" />
-              <label>Tues</label>
-              <input type="checkbox" value="Wednesday" />
-              <label>Wed</label>
-              <input type="checkbox" value="Thursday" />
-              <label>Thurs</label>
-              <input type="checkbox" value="Friday" />
-              <label>Fri</label>
-              <input type="checkbox" value="Saturday" />
-              <label>Sat</label>
-            </form>
-
+            <h1>Running</h1>
+            <h2>Set routine</h2>
+            <SetDateComponent></SetDateComponent>
             <h2>Set time</h2>
           </Text>
         </View>
