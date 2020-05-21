@@ -92,8 +92,6 @@ class SetDateComponent extends Component {
               />
               <label>Sat</label>
             </form>
-
-            <h2>Set time</h2>
           </Text>
         </View>
       </SafeAreaView>
