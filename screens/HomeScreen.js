@@ -47,9 +47,6 @@ class HomeScreen extends Component {
     return (
       <ScrollView style={styles.container}>
         <View>
-          <Text>
-            <ul></ul>
-          </Text>
         </View>
         <View style={styles.button}>
           <Button title="Continue" color="#19AC52" />

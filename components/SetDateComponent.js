@@ -1,6 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
-import React, { Component, useState } from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import firebase from '../config/firestore';
 
 class SetDateComponent extends Component {
@@ -14,7 +14,6 @@ class SetDateComponent extends Component {
   setSchedule() {
     // Firestore reference
     const db = firebase.firestore().collection('habits').doc('running');
-
     let day = document.getElementsByName('day');
     let setDays = [];
 
@@ -37,6 +36,7 @@ class SetDateComponent extends Component {
   }
 
   render() {
+
     return (
       <SafeAreaView>
         <View>
