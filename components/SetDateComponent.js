@@ -1,6 +1,7 @@
 import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import firebase from '../config/firestore';
 
 class SetDateComponent extends Component {
@@ -40,51 +41,50 @@ class SetDateComponent extends Component {
     return (
       <SafeAreaView>
         <View>
-          <Text>
             <form method="get">
-              <input
+              <CheckBox
                 type="checkbox"
                 name="day"
                 value="Sunday"
                 onChange={(e) => this.setSchedule()}
               />
               <label>Sun</label>
-              <input
+              <CheckBox
                 type="checkbox"
                 name="day"
                 value="Monday"
                 onChange={(e) => this.setSchedule()}
               />
               <label>Mon</label>
-              <input
+              <CheckBox
                 type="checkbox"
                 name="day"
                 value="Tuesday"
                 onChange={(e) => this.setSchedule()}
               />
               <label>Tues</label>
-              <input
+              <CheckBox
                 type="checkbox"
                 name="day"
                 value="Wednesday"
                 onChange={(e) => this.setSchedule()}
               />
               <label>Wed</label>
-              <input
+              <CheckBox
                 type="checkbox"
                 name="day"
                 value="Thursday"
                 onChange={(e) => this.setSchedule()}
               />
               <label>Thurs</label>
-              <input
+              <CheckBox
                 type="checkbox"
                 name="day"
                 value="Friday"
                 onChange={(e) => this.setSchedule()}
               />
               <label>Fri</label>
-              <input
+              <CheckBox
                 type="checkbox"
                 name="day"
                 value="Saturday"
@@ -92,7 +92,6 @@ class SetDateComponent extends Component {
               />
               <label>Sat</label>
             </form>
-          </Text>
         </View>
       </SafeAreaView>
     );

@@ -21,21 +21,22 @@ class HabitDetail extends Component {
 
   render() {
     return (
-<ImageBackground source={ require('../assets/images/background-img.jpeg')} style={styles.backgroundImage}>
-      <SafeAreaView>
-
-        <View style={styles.container}>
-          <Text style={styles.heading}>Running</Text>
+      <ImageBackground 
+        source={require('../assets/images/background-img.jpeg')} 
+        style={styles.backgroundImage}>
+        <SafeAreaView>
+          <View style={styles.container}>
+            <Text style={styles.heading}>Running</Text>
             <Text>Set routine</Text>
             <SetDateComponent></SetDateComponent>
             <Text>Set time</Text>
-          <Button
-            title="Confirm"
-            onPress={() => Alert.alert('Simple Button pressed')}
-          ></Button>
+            <Button
+              title="Confirm"
+              onPress={() => Alert.alert('Simple Button pressed')}
+            ></Button>
           </View>
-      </SafeAreaView>
-          </ImageBackground>
+        </SafeAreaView>
+      </ImageBackground>
     );
   }
 }
